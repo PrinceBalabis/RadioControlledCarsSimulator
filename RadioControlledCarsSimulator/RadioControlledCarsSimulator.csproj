@@ -42,11 +42,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
+    <Compile Include="Models\Car.cs" />
+    <Compile Include="Controller.cs" />
+    <Compile Include="Models\Coordinates.cs" />
+    <Compile Include="Models\Dimension.cs" />
+    <Compile Include="Models\MovementMap.cs" />
+    <Compile Include="Models\Room.cs" />
+    <Compile Include="View.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Content Include="ReadMe.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
