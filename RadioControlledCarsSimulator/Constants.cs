@@ -44,7 +44,7 @@ namespace RadioControlledCarsSimulator
             public static class Error
             {
                 public const string AskForValidate = "\r\nPlease validate the entered data and try again...";
-                public const string CaughtException = "\r\nSomething went wrong. Input data is either incorrectly formatted or other issue has occured. \r\nPlease review input data and try again. \r\n";
+                public const string CaughtException = "\r\nSomething went wrong. The Entered data is either incorrectly formatted or other issue has occured. \r\nPlease review the entered data and try again. \r\n";
             }
 
             public static class Setup

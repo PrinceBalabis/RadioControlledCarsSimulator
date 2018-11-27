@@ -55,18 +55,21 @@ namespace RadioControlledCarsSimulator.Models
                     // Confirm Simulation Commands
                     view.PrintSimulationCommands(rawInputData.ToUpperInvariant());
 
-                    // State that simulation has begun
-                    view.PrintSimulationBegun();
-
                     // Try to parse the inputted data
                     char[] commands = rawInputData.ToUpperInvariant().ToCharArray();
+
+                    for (int i = 0; i < commands.Length; i++)
+                    {
+                        if (!Char.IsLetter(commands[i]))
+                            throw new Exception("One or several characters of the entered data is not a letter!");
+                    }
+
+                    // State that simulation has begun
+                    view.PrintSimulationBegun();
 
                     // Perform one move for each command(why the for-loop exists)
                     for (int i = 0; i < commands.Length; i++)
                     {
-                        if (!Char.IsLetter(commands[i]))
-                            throw new Exception("One or several characters of the input is not a letter!");
-
                         if (commands[i].Equals(Constants.Car.Command.Forward)
                                 || commands[i].Equals(Constants.Car.Command.Backwards)
                                     || commands[i].Equals(Constants.Car.Command.Right)
@@ -88,7 +91,7 @@ namespace RadioControlledCarsSimulator.Models
                         }
                         else
                         {
-                            throw new Exception("One or several characters of the input is not a command!");
+                            throw new Exception("One or several characters of the entered data is not a command!");
                         }
                     }
                     break;
@@ -199,8 +202,8 @@ namespace RadioControlledCarsSimulator.Models
                     String[] rawRequestedData = rawInputData.Split(' ');
 
                     // Additional validations which exception-handling does not cover
-                    if (rawRequestedData.Length > 3)
-                        throw new Exception("There are more than three characters!");
+                    if (rawRequestedData.Length != 3)
+                        throw new Exception("Please add the coordinates in this format: \"X Y H\" ");
 
                     char heading = Char.ToUpperInvariant(Convert.ToChar(rawRequestedData[2]));
 
@@ -255,8 +258,11 @@ namespace RadioControlledCarsSimulator.Models
                     int[] rawRequestedData = Array.ConvertAll<string, int>(rawInputData.Split(' '), int.Parse);
 
                     // Additional validations which exception-handling does not cover
-                    if (rawRequestedData.Length > 2)
-                        throw new Exception("There are more than two integers!");
+                    if (rawRequestedData.Length != 2)
+                        throw new Exception("Please add the dimensions in this format: \"X Y\" ");
+
+                    if (rawRequestedData[0] <= 0 || rawRequestedData[1] <= 0)
+                        throw new Exception("Please only set values higher than 0 for the room dimensions");
 
                     // Create Room
                     Room room = new Room
