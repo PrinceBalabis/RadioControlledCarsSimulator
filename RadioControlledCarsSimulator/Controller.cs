@@ -82,11 +82,8 @@ namespace RadioControlledCarsSimulator.Models
                 }
                 catch (Exception e)
                 {
-                    //view.PrintErrorValidationMessage();
-                    if (e.InnerException != null)
-                        view.PrintErrorValidationInnerExceptionMessage(e.InnerException.ToString());
-                    else
-                        view.PrintErrorValidationInnerExceptionMessage(e.Message);
+                    view.PrintErrorValidationMessage();
+                    //view.ShowErrorValidationInnerExceptionMessage(e.InnerException.ToString());
                 }
 
             return true;
@@ -191,7 +188,7 @@ namespace RadioControlledCarsSimulator.Models
 
                     char heading = Char.ToUpperInvariant(Convert.ToChar(rawRequestedData[2]));
 
-                    if (Char.IsDigit(heading))
+                    if (!Char.IsLetterOrDigit(heading))
                         throw new Exception("Heading is not a letter!");
 
                     if (heading.Equals(Constants.Car.Heading.North)
@@ -217,16 +214,14 @@ namespace RadioControlledCarsSimulator.Models
                     }
                     else
                     {
-                        throw new Exception("Please enter a heading.");
+                        throw new Exception("This is not a heading!");
+
                     }
                 }
                 catch (Exception e)
                 {
-                    //view.PrintErrorValidationMessage();
-                    if (e.InnerException != null)
-                        view.PrintErrorValidationInnerExceptionMessage(e.InnerException.ToString());
-                    else
-                        view.PrintErrorValidationInnerExceptionMessage(e.Message);
+                    view.PrintErrorValidationMessage();
+                    //view.ShowErrorValidationInnerExceptionMessage(e.InnerException.ToString());
                 }
         }
 
@@ -258,11 +253,8 @@ namespace RadioControlledCarsSimulator.Models
                 }
                 catch (Exception e)
                 {
-                    //view.PrintErrorValidationMessage();
-                    if (e.InnerException != null)
-                        view.PrintErrorValidationInnerExceptionMessage(e.InnerException.ToString());
-                    else
-                        view.PrintErrorValidationInnerExceptionMessage(e.Message);
+                    view.PrintErrorValidationMessage();
+                    //view.ShowErrorValidationInnerExceptionMessage(e.InnerException.ToString());
                 }
         }
 
