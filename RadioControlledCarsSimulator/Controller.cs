@@ -23,7 +23,7 @@ namespace RadioControlledCarsSimulator.Models
 
             // Create Car which is to be simulated
             // In this case a Monster Truck should be simulated.
-            Car monsterTruck = CreateCar(Constants.Car.Type.MonsterTruck);
+            Car monsterTruck = CreateCar(Constants.Car.Type.MonsterTruck, room);
 
             bool success = PerformSimulationCommands(room, monsterTruck);
 
@@ -121,14 +121,8 @@ namespace RadioControlledCarsSimulator.Models
             car.Coordinates.X += movementMap.X;
             car.Coordinates.Y += movementMap.Y;
 
-            // Calculate if its within the bounds of the room
-            if (car.Coordinates.X > room.Dimension.Width || car.Coordinates.Y > room.Dimension.Height
-                || car.Coordinates.X < 0 || car.Coordinates.Y < 0)
-            {
-                return false;
-            }
-
-            return true;
+            // Check if its within the bounds of the room
+            return IsInsideRoomBoundaries(car, room);
         }
 
         private void CalculateNewHeading(char command, Car car)
@@ -164,7 +158,20 @@ namespace RadioControlledCarsSimulator.Models
             }
         }
 
-        private Car CreateCar(String type)
+        private bool IsInsideRoomBoundaries(Car car, Room room)
+        {
+            if (car.Coordinates.X > room.Dimension.Width || car.Coordinates.Y > room.Dimension.Height
+                    || car.Coordinates.X < 0 || car.Coordinates.Y < 0)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        private Car CreateCar(String type, Room room)
         {
             while (true)
                 try
@@ -177,20 +184,39 @@ namespace RadioControlledCarsSimulator.Models
 
                     // Additional validations which exception-handling does not cover
                     if (rawRequestedData.Length > 3)
-                        throw new Exception("More than two integers!");
+                        throw new Exception("There are more than three characters!");
 
-                    // Create Car
-                    Car monsterTruck = new Car
+                    char heading = Char.ToUpperInvariant(Convert.ToChar(rawRequestedData[2]));
+
+                    if (!Char.IsLetterOrDigit(heading))
+                        throw new Exception("Heading is not a letter!");
+
+                    if (heading.Equals(Constants.Car.Heading.North)
+                        || heading.Equals(Constants.Car.Heading.South)
+                         || heading.Equals(Constants.Car.Heading.West)
+                          || heading.Equals(Constants.Car.Heading.East))
                     {
-                        Type = type,
-                        Coordinates = new Coordinates { X = Convert.ToInt32(rawRequestedData[0]), Y = Convert.ToInt32(rawRequestedData[1]) },
-                        Heading = Convert.ToChar(rawRequestedData[2])
-                    };
+                        // Create Car
+                        Car car = new Car
+                        {
+                            Type = type,
+                            Coordinates = new Coordinates { X = Convert.ToInt32(rawRequestedData[0]), Y = Convert.ToInt32(rawRequestedData[1]) },
+                            Heading = heading
+                        };
 
-                    // Confirm dimensions of Car
-                    view.PrintStartingPositionHeading(monsterTruck.Coordinates.X, monsterTruck.Coordinates.Y, monsterTruck.Heading);
+                        if (!IsInsideRoomBoundaries(car, room))
+                            throw new Exception("You can't set coordinates which are outside the room boundaries!");
 
-                    return monsterTruck;
+                        // Confirm dimensions of Car
+                        view.PrintStartingPositionHeading(car.Coordinates.X, car.Coordinates.Y, car.Heading);
+
+                        return car;
+                    }
+                    else
+                    {
+                        throw new Exception("This is not a heading!");
+
+                    }
                 }
                 catch (Exception e)
                 {
@@ -212,7 +238,7 @@ namespace RadioControlledCarsSimulator.Models
 
                     // Additional validations which exception-handling does not cover
                     if (rawRequestedData.Length > 2)
-                        throw new Exception("More than two integers!");
+                        throw new Exception("There are more than two integers!");
 
                     // Create Room
                     Room room = new Room
