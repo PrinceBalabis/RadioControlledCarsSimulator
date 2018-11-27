@@ -53,30 +53,43 @@ namespace RadioControlledCarsSimulator.Models
                     String rawInputData = view.AskSimulationCommands();
 
                     // Confirm Simulation Commands
-                    view.PrintSimulationCommands(rawInputData);
+                    view.PrintSimulationCommands(rawInputData.ToUpperInvariant());
 
                     // State that simulation has begun
                     view.PrintSimulationBegun();
 
                     // Try to parse the inputted data
-                    char[] commands = rawInputData.ToCharArray();
+                    char[] commands = rawInputData.ToUpperInvariant().ToCharArray();
 
                     // Perform one move for each command(why the for-loop exists)
                     for (int i = 0; i < commands.Length; i++)
                     {
-                        if (commands[i].Equals(Constants.Car.Command.Left) || commands[i].Equals(Constants.Car.Command.Right))
+                        if (!Char.IsLetter(commands[i]))
+                            throw new Exception("One or several characters of the input is not a letter!");
+
+                        if (commands[i].Equals(Constants.Car.Command.Forward)
+                                || commands[i].Equals(Constants.Car.Command.Backwards)
+                                    || commands[i].Equals(Constants.Car.Command.Right)
+                                        || commands[i].Equals(Constants.Car.Command.Left))
                         {
-                            CalculateNewHeading(commands[i], car);
+                            if (commands[i].Equals(Constants.Car.Command.Left) || commands[i].Equals(Constants.Car.Command.Right))
+                            {
+                                CalculateNewHeading(commands[i], car);
+                            }
+                            else
+                            {
+                                bool withinBoundariesOfRoom = CalculateNewPosition(commands[i], room, car);
+                                if (!withinBoundariesOfRoom)
+                                    return false;
+                            }
+
+                            // Print current car status after the one successful move
+                            view.PrintCurrentCarCoordinatesHeading(i + 1, commands[i], car.Coordinates.X, car.Coordinates.Y, car.Heading);
                         }
                         else
                         {
-                            bool withinBoundariesOfRoom = CalculateNewPosition(commands[i], room, car);
-                            if (!withinBoundariesOfRoom)
-                                return false;
+                            throw new Exception("One or several characters of the input is not a command!");
                         }
-
-                        // Print current car status after the one successful move
-                        view.PrintCurrentCarCoordinatesHeading(i + 1, commands[i], car.Coordinates.X, car.Coordinates.Y, car.Heading);
                     }
                     break;
                 }
